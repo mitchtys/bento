@@ -131,6 +131,13 @@
   ],
   "post-processors": [
     {
+      "type": "shell-local",
+      "inline": [
+        "set -ex; # Note, the qemu builder builds qcow2 images natively, we just need to copy it out before the vagrant post-processor runs and deletes stuff",
+        "cp {{ user `build_directory` }}/packer-{{ user `template` }}-qemu/{{ user `template` }} {{ user `build_directory` }}/{{ user `template` }}.qcow2"
+      ]
+    },
+    {
       "output": "{{ user `build_directory` }}/{{user `box_basename`}}.{{.Provider}}.box",
       "type": "vagrant"
     }
@@ -154,6 +161,7 @@
         "{{template_dir}}/../_common/virtualbox.sh",
         "{{template_dir}}/scripts/vmware.sh",
         "{{template_dir}}/../_common/parallels.sh",
+        "{{template_dir}}/scripts/cloud-init.sh",
         "{{template_dir}}/scripts/vagrant_group.sh",
         "{{template_dir}}/scripts/sudoers.sh",
         "{{template_dir}}/scripts/zypper-locks.sh",
